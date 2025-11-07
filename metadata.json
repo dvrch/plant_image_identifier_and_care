@@ -1,0 +1,5 @@
+{
+  "name": "Gardening Guru",
+  "description": "An AI-powered gardening assistant that identifies plants from photos, provides detailed care instructions, and answers all your gardening questions.",
+  "requestFramePermissions": []
+}
