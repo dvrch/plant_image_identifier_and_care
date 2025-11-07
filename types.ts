@@ -2,14 +2,14 @@
 export interface PlantInfo {
   plantName: string;
   description: string;
-  careInstructions: {
+  careInstructions?: {
     watering: string;
     sunlight: string;
     soil: string;
     fertilizer: string;
     pruning: string;
   };
-  funFact: string;
+  funFact?: string;
 }
 
 export enum MessageAuthor {

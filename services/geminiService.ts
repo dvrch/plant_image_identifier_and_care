@@ -11,8 +11,8 @@ const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 const plantCareSchema = {
   type: Type.OBJECT,
   properties: {
-    plantName: { type: Type.STRING, description: 'The common name of the plant.' },
-    description: { type: Type.STRING, description: 'A brief, engaging description of the plant.' },
+    plantName: { type: Type.STRING, description: 'The common name of the plant. If not identifiable, this should state "Unknown Plant".' },
+    description: { type: Type.STRING, description: 'A brief, engaging description of the plant. If not identifiable, provide a message explaining that.' },
     careInstructions: {
       type: Type.OBJECT,
       properties: {
@@ -26,7 +26,7 @@ const plantCareSchema = {
     },
     funFact: { type: Type.STRING, description: 'An interesting or fun fact about the plant.' },
   },
-  required: ['plantName', 'description', 'careInstructions', 'funFact'],
+  required: ['plantName', 'description'],
 };
 
 export async function analyzePlantImage(imageDataBase64: string): Promise<PlantInfo> {
@@ -39,8 +39,9 @@ export async function analyzePlantImage(imageDataBase64: string): Promise<PlantI
 
   const textPart = {
     text: `
-      Identify the plant in this image. Provide its common name, a brief description, detailed care instructions (watering, sunlight, soil, fertilizer, pruning), and a fun fact.
-      If you cannot identify the plant with high confidence, state that clearly and do not provide care instructions.
+      Identify the plant in this image. Provide its common name and a brief description.
+      If you can identify the plant with high confidence, ALSO provide detailed care instructions (watering, sunlight, soil, fertilizer, pruning) and a fun fact.
+      If you cannot identify the plant, just provide the plantName as "Unknown Plant" and a description explaining you could not identify it. Do not provide care instructions or a fun fact.
     `,
   };
   
@@ -59,8 +60,7 @@ export async function analyzePlantImage(imageDataBase64: string): Promise<PlantI
   // A simple validation to ensure the parsed object matches the expected structure.
   if (
     !data.plantName ||
-    !data.careInstructions ||
-    typeof data.careInstructions.watering !== 'string'
+    !data.description
   ) {
     throw new Error('Invalid JSON structure received from API.');
   }
